@@ -78,7 +78,7 @@ if [ -z "$FPPVERSION" ] || [ -z "$COMMITHASH" ] || [ -z "$GITCLONELINK" ] || [ -
 	else
 		FPPVERSION="2.1"
 		CONFIGNAME="fppconfig"
-		COMMITHASH="97b5c0b45009e913624364469a41d891d3f0021c"
+		COMMITHASH="9054c90d9170f47a707933eac8cf0d67d553e951"
 		CONFIGLINK="https://github.com/Birdthulu/Ishiiruka/raw/master/config/$FPPVERSION-$CONFIGNAME.tar.gz"
 		GITCLONELINK="https://github.com/Birdthulu/Ishiiruka"
 	fi

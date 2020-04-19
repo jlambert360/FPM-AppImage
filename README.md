@@ -24,15 +24,17 @@ Solus (possible list, untested):
 ```sh
 sh -c "$(curl -Ls https://github.com/Birdthulu/Ishiiruka/raw/master/setup)"
 ```
-1. Use install script to obtain FPP
-2. Download sd.raw https://mega.nz/file/acUSnSzR#a7vhsH3ke2nFr9hiBO4kqUOhAuoHYOX-QyAwX4MHnqc
-3. Move Brawl into FasterProjectPlus/bin/Games directory
-4. Open Dolphin
-5. Go to Config -> Paths -> Add
-6. Add Launcher & Games directories that are in the FasterProjectPlus directory
-7. Close config
-8. Right click brawl and set as default iso
-9. Run the game by opening the .elf file in dolphin
+
+1. Install necessary dependcies listed using guide above.
+2. Use install script to obtain FPP
+3. Download sd.raw https://mega.nz/file/acUSnSzR#a7vhsH3ke2nFr9hiBO4kqUOhAuoHYOX-QyAwX4MHnqc
+4. Move Brawl into FasterProjectPlus/bin/Games directory
+5. Open Dolphin
+6. Go to Config -> Paths -> Add
+7. Add Launcher & Games directories that are in the FasterProjectPlus directory
+8. Close config
+9. Right click brawl and set as default iso
+10. Run the game by opening the .elf file in dolphin
 
 If a different version is needed (e.g. not SL default), edit the script and replace the desired variables.
 
