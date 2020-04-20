@@ -27,7 +27,7 @@ sh -c "$(curl -Ls https://github.com/Birdthulu/FPM-Installer/raw/master/setup)"
 
 1. Install necessary dependcies listed using guide above.
 2. Use install script to obtain FPP
-3. Download sd.raw https://mega.nz/file/acUSnSzR#a7vhsH3ke2nFr9hiBO4kqUOhAuoHYOX-QyAwX4MHnqc
+3. Download sd.raw https://mega.nz/file/nMlkAK4I#1-yv_cZQjYcjJE1sXnNBpiLM4JYzbofZRFiteFjdFdQ
 4. Move Brawl into FasterProjectPlus/bin/Games directory
 5. Open Dolphin
 6. Go to Config -> Paths -> Add
