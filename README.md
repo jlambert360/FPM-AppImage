@@ -27,13 +27,8 @@ sh -c "$(curl -Ls https://github.com/Birdthulu/FPM-Installer/raw/master/setup)"
 
 1. Install necessary dependcies listed using guide above.
 2. Use install script to obtain FPP
-4. Move Brawl into FasterProjectPlus/bin/Games directory
-5. Open Dolphin
-6. Go to Config -> Paths -> Add
-7. Add Launcher & Games directories that are in the FasterProjectPlus directory
-8. Close config
-9. Right click brawl and set as default iso
-10. Run the game by opening the .elf file in dolphin
+3. Move Brawl into FasterProjectPlus/bin/Games directory
+4. Run the game by opening the .elf file in dolphin
 
 If a different version is needed (e.g. not SL default), edit the script and replace the desired variables.
 
@@ -41,7 +36,8 @@ Packed config structure: main folder named `Binaries/`, with  `User/`, `Sys/`, `
 
 ## Changelog
 v1.0: Support for versions 2.1 and 2.0.
-v1.1: Downloads the sd card for you.
+v2.0: Downloads the sd card for you.
+v3.0: Renames the config paths for you.
 
 ### Thanks to:
 

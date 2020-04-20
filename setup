@@ -13,7 +13,7 @@ if [ -f "./setup" ] && [ -z "${IN_NIX_SHELL++}" ]; then
 	echo "sh -c \"\$(curl -Ls https://github.com/Birdthulu/FPM-Installer/raw/master/setup)"
 	echo ""
 	echo "to ensure you have the latest version!"
-	# exit
+	exit
 fi
 
 # --- Attempts to determine the number of cores in the CPU. ---
@@ -66,7 +66,7 @@ fi
 if [ -z "$FPPVERSION" ] || [ -z "$COMMITHASH" ] || [ -z "$GITCLONELINK" ] || [ -z "$CONFIGLINK" ]; then #ORs used to ensure everything filled out
 	echo ""
 	echo "Which version of Faster Project Plus would you like to install? (default: 1)"
-	echo "1.) 2.1 (Latest version)"
+	echo "1.) 2.1.1 (Latest version)"
 	echo "2.) 2.0"
 	read -r RESP
 	if [ "$RESP" -eq 2 ] 2> /dev/null; then
@@ -76,7 +76,7 @@ if [ -z "$FPPVERSION" ] || [ -z "$COMMITHASH" ] || [ -z "$GITCLONELINK" ] || [ -
 		CONFIGLINK="https://github.com/Birdthulu/FPM-Installer/raw/master/config/legacy/$FPPVERSION-$CONFIGNAME.tar.gz"
 		GITCLONELINK="https://github.com/Birdthulu/Ishiiruka"
 	else
-		FPPVERSION="2.1"
+		FPPVERSION="2.1.1"
 		CONFIGNAME="fppconfig"
 		COMMITHASH="9054c90d9170f47a707933eac8cf0d67d553e951"
 		CONFIGLINK="https://github.com/Birdthulu/FPM-Installer/raw/master/config/$FPPVERSION-$CONFIGNAME.tar.gz"
@@ -205,9 +205,10 @@ echo "Compiling..."
 make -j $CPUS -s
 # ---
 
-# ---
+# --- Download the sd card tarball, extract it, move it to proper folder, and delete tarball
 echo "Downloading sd card"
-curl -LO# "download1514.mediafire.com/9j8fgxwcvtdg/7f7q8a6m8plyq16/ProjectPlusSdCard.tar.gz"
+curl -LO# "download1590.mediafire.com/umxtvy82odyg/7f7q8a6m8plyq16/ProjectPlusSdCard.tar.gz"
+echo "Extracting sd card"
 tar -xzf "ProjectPlusSdCard.tar.gz" --checkpoint-action='exec=printf "%d/12130 records extracted.\r" $TAR_CHECKPOINT' --totals
 mv "sd.raw" "Binaries/User/Wii/sd.raw"
 rm "ProjectPlusSdCard.tar.gz"
@@ -222,19 +223,21 @@ rm -f ../launch-faster-project-plus # -f required if shortcuts do not exist
 rm -f ../launch-fpp
 # ---
 
-# --- Get Paths
-MainDir = "${pwd}/bin"
-LauncherDir = "${MainDir}/Launcher"
-GamesDir = "${MainDir}/Games"
-SDPath = "${MainDir}/User/Wii/sd.raw"
-IsoPath = "${GamesDIr}/RSBE01.iso" 
+# --- Get Main path and Set Up path variables for config/Dolphin.ini 
+echo "Setting config paths"
+MainDir=$(pwd)"/bin"
+LauncherDir=$MainDir"/Launcher"
+GamesDir=$MainDir"/Games"
+SDPath=$MainDir"/User/Wii/sd.raw"
+IsoPath=$GamesDir"/RSBE01.iso"
+ConfigPath=$MainDir"/User/Config/Dolphin.ini"
 # ---
 
-# --- Set paths
-sed "s/LauncherPath/\${LauncherDir}/g" Dolphin.ini
-sed "s/GamesPath/\${GamesDir}/g" Dolphin.ini
-sed "s/SDPath/\${SDPath}/g" Dolphin.ini
-sed "s/ISOPath/\${IsoPath}/g" Dolphin.ini
+# --- Set LauncherDir, GamesDir, SdCardPath, and Default ISO path in config/Dolphin.ini
+sed -i -e "s|LauncherDir|${LauncherDir}|" $ConfigPath
+sed -i -e "s|GamesPath|${GamesDir}|" $ConfigPath
+sed -i -e "s|SDPath|${SDPath}|" $ConfigPath
+sed -i -e "s|ISODirPath|${IsoPath}|" $ConfigPath
 # ---
 
 # --- create symlink to newly compiled dolphin-emu. if queued, create shortcut.
