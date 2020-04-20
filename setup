@@ -162,6 +162,13 @@ fi
 echo "Using $CPUS thread(s)!"
 # ---
 
+# --- Patch tarball to display correct hash to other netplay clients
+echo "Patching tarball..."
+sed -i "s|\${GIT_EXECUTABLE} rev-parse HEAD|echo ${COMMITHASH}|g" CMakeLists.txt  # --set scm_rev_str everywhere to actual commit hash when downloaded
+sed -i "s|\${GIT_EXECUTABLE} describe --always --long --dirty|echo FM v$FPPVERSION|g" CMakeLists.txt # ensures compatibility w/ netplay
+sed -i "s|\${GIT_EXECUTABLE} rev-parse --abbrev-ref HEAD|echo HEAD|g" CMakeLists.txt
+# ---
+
 # --- enter folder, download and extract needed files
 echo ""
 mkdir "$FOLDERNAME" && cd "$FOLDERNAME"
