@@ -13,7 +13,7 @@ if [ -f "./setup" ] && [ -z "${IN_NIX_SHELL++}" ]; then
 	echo "sh -c \"\$(curl -Ls https://github.com/Birdthulu/FPM-Installer/raw/master/setup)"
 	echo ""
 	echo "to ensure you have the latest version!"
-	exit
+	# exit
 fi
 
 # --- Attempts to determine the number of cores in the CPU. ---
@@ -220,6 +220,21 @@ mv Ishiiruka/build/Binaries/ bin/
 rm -rf Ishiiruka # -f required to remove git history
 rm -f ../launch-faster-project-plus # -f required if shortcuts do not exist
 rm -f ../launch-fpp
+# ---
+
+# --- Get Paths
+MainDir = "${pwd}/bin"
+LauncherDir = "${MainDir}/Launcher"
+GamesDir = "${MainDir}/Games"
+SDPath = "${MainDir}/User/Wii/sd.raw"
+IsoPath = "${GamesDIr}/RSBE01.iso" 
+# ---
+
+# --- Set paths
+sed "s/LauncherPath/\${LauncherDir}/g" Dolphin.ini
+sed "s/GamesPath/\${GamesDir}/g" Dolphin.ini
+sed "s/SDPath/\${SDPath}/g" Dolphin.ini
+sed "s/ISOPath/\${IsoPath}/g" Dolphin.ini
 # ---
 
 # --- create symlink to newly compiled dolphin-emu. if queued, create shortcut.
