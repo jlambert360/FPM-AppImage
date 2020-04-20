@@ -10,7 +10,7 @@ set -e
 if [ -f "./setup" ] && [ -z "${IN_NIX_SHELL++}" ]; then
 	echo "You are running a hosted copy of the script. Please *delete the local file 'setup'* and run"
 	echo ""
-	echo "sh -c \"\$(curl -Ls https://github.com/Birdthulu/Ishiiruka/raw/master/setup)"
+	echo "sh -c \"\$(curl -Ls https://github.com/Birdthulu/FPM-Installer/raw/master/setup)"
 	echo ""
 	echo "to ensure you have the latest version!"
 	exit
@@ -162,13 +162,6 @@ fi
 echo "Using $CPUS thread(s)!"
 # ---
 
-# --- Patch tarball to display correct hash to other netplay clients
-echo "Patching tarball..."
-sed -i "s|\${GIT_EXECUTABLE} rev-parse HEAD|echo ${COMMITHASH}|g" CMakeLists.txt  # --set scm_rev_str everywhere to actual commit hash when downloaded
-sed -i "s|\${GIT_EXECUTABLE} describe --always --long --dirty|echo FM v$FPPVERSION|g" CMakeLists.txt # ensures compatibility w/ netplay
-sed -i "s|\${GIT_EXECUTABLE} rev-parse --abbrev-ref HEAD|echo HEAD|g" CMakeLists.txt
-# ---
-
 # --- enter folder, download and extract needed files
 echo ""
 mkdir "$FOLDERNAME" && cd "$FOLDERNAME"
@@ -186,6 +179,13 @@ rm "$COMMITHASH.tar.gz"
 echo "" #spacing
 mv "Ishiiruka-$COMMITHASH" Ishiiruka
 cd Ishiiruka
+
+# --- Patch tarball to display correct hash to other netplay clients
+echo "Patching tarball..."
+sed -i "s|\${GIT_EXECUTABLE} rev-parse HEAD|echo ${COMMITHASH}|g" CMakeLists.txt  # --set scm_rev_str everywhere to actual commit hash when downloaded
+sed -i "s|\${GIT_EXECUTABLE} describe --always --long --dirty|echo FM v$FPPVERSION|g" CMakeLists.txt # ensures compatibility w/ netplay
+sed -i "s|\${GIT_EXECUTABLE} rev-parse --abbrev-ref HEAD|echo HEAD|g" CMakeLists.txt
+# ---
 
 # --- move necessary config files into the build folder
 echo "Adding FPP config files..."

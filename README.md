@@ -22,7 +22,7 @@ Solus (possible list, untested):
 ## To use:
 
 ```sh
-sh -c "$(curl -Ls https://github.com/Birdthulu/Ishiiruka/raw/master/setup)"
+sh -c "$(curl -Ls https://github.com/Birdthulu/FPM-Installer/raw/master/setup)"
 ```
 
 1. Install necessary dependcies listed using guide above.
