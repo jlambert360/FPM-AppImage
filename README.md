@@ -27,7 +27,6 @@ sh -c "$(curl -Ls https://github.com/Birdthulu/FPM-Installer/raw/master/setup)"
 
 1. Install necessary dependcies listed using guide above.
 2. Use install script to obtain FPP
-3. Download sd.raw https://mega.nz/file/nMlkAK4I#1-yv_cZQjYcjJE1sXnNBpiLM4JYzbofZRFiteFjdFdQ
 4. Move Brawl into FasterProjectPlus/bin/Games directory
 5. Open Dolphin
 6. Go to Config -> Paths -> Add
@@ -42,6 +41,7 @@ Packed config structure: main folder named `Binaries/`, with  `User/`, `Sys/`, `
 
 ## Changelog
 v1.0: Support for versions 2.1 and 2.0.
+v1.1: Downloads the sd card for you.
 
 ### Thanks to:
 

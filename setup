@@ -205,6 +205,14 @@ echo "Compiling..."
 make -j $CPUS -s
 # ---
 
+# ---
+echo "Downloading sd card"
+curl -LO# "download1514.mediafire.com/9j8fgxwcvtdg/7f7q8a6m8plyq16/ProjectPlusSdCard.tar.gz"
+tar -xzf "ProjectPlusSdCard.tar.gz" --checkpoint-action='exec=printf "%d/12130 records extracted.\r" $TAR_CHECKPOINT' --totals
+mv "sd.raw" "Binaries/User/Wii/sd.raw"
+rm "ProjectPlusSdCard.tar.gz"
+# ---
+
 # --- Delete created files and old symlinks, isolate Binaries to their own folder
 echo "Cleaning up..."
 cd ../..
