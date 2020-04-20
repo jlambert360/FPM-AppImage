@@ -206,8 +206,14 @@ make -j $CPUS -s
 # ---
 
 # --- Download the sd card tarball, extract it, move it to proper folder, and delete tarball
+# credit to https://superuser.com/a/1517096 superuser.com user Zibri
 echo "Downloading sd card"
-curl -LO# "download1590.mediafire.com/umxtvy82odyg/7f7q8a6m8plyq16/ProjectPlusSdCard.tar.gz"
+mdl () { 
+url=$(curl -Lqs0 "$1"|grep "href.*download.*media.*"|tail -1|cut -d '"' -f 2)
+wget "$url"
+} 
+mdl http://www.mediafire.com/file/7f7q8a6m8plyq16/ProjectPlusSdCard.tar.gz/file
+
 echo "Extracting sd card"
 tar -xzf "ProjectPlusSdCard.tar.gz" --checkpoint-action='exec=printf "%d/12130 records extracted.\r" $TAR_CHECKPOINT' --totals
 mv "sd.raw" "Binaries/User/Wii/sd.raw"
