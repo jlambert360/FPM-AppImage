@@ -73,13 +73,13 @@ if [ -z "$FPPVERSION" ] || [ -z "$COMMITHASH" ] || [ -z "$GITCLONELINK" ] || [ -
 	 	FPPVERSION="2.0"
 		CONFIGNAME="fppconfig"
 		COMMITHASH="a667c245df18678b5060b3807e1c3238536c0ef1"
-		CONFIGLINK="https://github.com/Birdthulu/Ishiiruka/raw/master/config/legacy/$FPPVERSION-$CONFIGNAME.tar.gz"
+		CONFIGLINK="https://github.com/Birdthulu/FPM-Installer/raw/master/config/legacy/$FPPVERSION-$CONFIGNAME.tar.gz"
 		GITCLONELINK="https://github.com/Birdthulu/Ishiiruka"
 	else
 		FPPVERSION="2.1"
 		CONFIGNAME="fppconfig"
 		COMMITHASH="9054c90d9170f47a707933eac8cf0d67d553e951"
-		CONFIGLINK="https://github.com/Birdthulu/Ishiiruka/raw/master/config/$FPPVERSION-$CONFIGNAME.tar.gz"
+		CONFIGLINK="https://github.com/Birdthulu/FPM-Installer/raw/master/config/$FPPVERSION-$CONFIGNAME.tar.gz"
 		GITCLONELINK="https://github.com/Birdthulu/Ishiiruka"
 	fi
 	echo "Installing version $FPPVERSION!"
