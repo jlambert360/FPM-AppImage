@@ -19,16 +19,37 @@ Solus (possible list, untested):
 
 `sudo eopkg it libgtk-2-devel libgtk-3-devel wxwidgets-devel libsm-devel gtest-devel llvm-devel lzo-devel mbedtls-devel miniupnpc-devel libxrandr-devel libxi-devel alsa-lib-devel bluez-devel mesalib-devel curl-devel enet-devel libevdev-devel pulseaudio-devel libusb-devel openal-soft-devel portaudio-devel sdl2-devel SFML-devel soundtouch-devel git cmake pkg-config gcc readline-devel libxext-devel libao-devel`
 
+## Dependencies Optional
+
+`axel` or `aria2c`
+
+Gives  a fast way to download the SD card. 
+Defaults to wget without them.
+Wget is extremeley slow by comparision.
+
+
+Downloading sd card benchmarks
+
+SD card file size 2Gb zipped to 1.6Gb
+
+| UrlDownloader | Download Time |   |
+|---------------|---------------|---|
+| axel          | 1-2 min(s)    |   |
+| aria2c        | 3-4 mins      |   |
+| wget          | 15-20 mins    |   |
+
+## Instructions: (READ FULLY BEFORE FOLLOWING)
+
+1. Install necessary dependcies listed using guide above. Don't forget that optional deps will bring fast downloads.
+2. Use install script to obtain FPP
+3. Move Brawl into FasterProjectPlus/bin/Games directory
+4. Run the game by opening the .elf file in dolphin
+
 ## To use:
 
 ```sh
 sh -c "$(curl -Ls https://github.com/Birdthulu/FPM-Installer/raw/master/setup)"
 ```
-
-1. Install necessary dependcies listed using guide above.
-2. Use install script to obtain FPP
-3. Move Brawl into FasterProjectPlus/bin/Games directory
-4. Run the game by opening the .elf file in dolphin
 
 If a different version is needed (e.g. not SL default), edit the script and replace the desired variables.
 
@@ -38,6 +59,7 @@ Packed config structure: main folder named `Binaries/`, with  `User/`, `Sys/`, `
 v1.0: Support for versions 2.1 and 2.0.
 v2.0: Downloads the sd card for you.
 v3.0: Renames the config paths for you.
+V3.1: Optional parallel downloads, increases the speed by magnitudes.
 
 ### Thanks to:
 

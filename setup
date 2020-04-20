@@ -208,11 +208,21 @@ make -j $CPUS -s
 # --- Download the sd card tarball, extract it, move it to proper folder, and delete tarball
 # credit to https://superuser.com/a/1517096 superuser.com user Zibri
 echo "Downloading sd card"
-mdl () { 
-url=$(curl -Lqs0 "$1"|grep "href.*download.*media.*"|tail -1|cut -d '"' -f 2)
-wget "$url"
-} 
-mdl http://www.mediafire.com/file/7f7q8a6m8plyq16/ProjectPlusSdCard.tar.gz/file
+SdCardFileName="ProjectPlusSdCard.tar.gz"
+SdCardDlHash="7f7q8a6m8plyq16"
+SdCardLink="http://www.mediafire.com/file/$SdCardDlHash/$SdCardFileName/file"
+url=$(curl -Lqs0 "$SdCardLink" | grep "href.*download.*media.*"| grep "$SdCardFileName" | cut -d '"' -f 2)
+
+echo "Attempting with Axel";
+if [ -x "$(command -v axel)" ]; then
+	axel "$url" -a -n $CPUS; 
+elif [ -x "$(command -v aria2c)" ]; then
+	echo "Axel command failed, dependency may be missing, attempting with aria2";
+	aria2c -x$CPUS "$url"
+else
+ echo "Axel and Aria2 command failed, dependency may be missing, reverting to slowest way possible";
+ wget "$url"
+fi
 
 echo "Extracting sd card"
 tar -xzf "ProjectPlusSdCard.tar.gz" --checkpoint-action='exec=printf "%d/12130 records extracted.\r" $TAR_CHECKPOINT' --totals
