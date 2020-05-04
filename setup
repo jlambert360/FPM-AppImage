@@ -62,6 +62,19 @@ else
 fi
 # ---
 
+# --- ask if the user is on Ubuntu 20.04
+echo ""
+echo "Are you running Ubuntu 20.04 or a derivative? (y/N)"
+read -r RESP
+if [ "$RESP" = "y" ] || [ "$RESP" = "Y" ]; then
+	echo "Applying patch!"
+	UBPATCH=1
+else
+	echo "Will not apply patch."
+	UBPATCH=0
+fi
+# ---
+
 # --- if custom links aren't defined, prompt to choose a version
 if [ -z "$FPPVERSION" ] || [ -z "$COMMITHASH" ] || [ -z "$GITCLONELINK" ] || [ -z "$CONFIGLINK" ]; then #ORs used to ensure everything filled out
 	echo ""
@@ -185,6 +198,17 @@ echo "Patching tarball..."
 sed -i "s|\${GIT_EXECUTABLE} rev-parse HEAD|echo ${COMMITHASH}|g" CMakeLists.txt  # --set scm_rev_str everywhere to actual commit hash when downloaded
 sed -i "s|\${GIT_EXECUTABLE} describe --always --long --dirty|echo FM v$FPPVERSION|g" CMakeLists.txt # ensures compatibility w/ netplay
 sed -i "s|\${GIT_EXECUTABLE} rev-parse --abbrev-ref HEAD|echo HEAD|g" CMakeLists.txt
+# ---
+
+# --- Patch wxWidgets3 for Ubuntu 20.04
+if [ "$UBPATCH" -eq 1 ]; then
+	echo "Patching wxWidgets3 for Ubuntu 20.04"
+	sed -i "s| OR NOT X11_Xinerama_FOUND||g" Externals/wxWidgets3/CMakeLists.txt
+	sed -i "s|needs Xinerama and|needs|g" Externals/wxWidgets3/CMakeLists.txt
+	sed -i "s|\t\t\${X11_Xinerama_LIB}||g" Externals/wxWidgets3/CMakeLists.txt
+else
+	echo "Skipping patch for Ubuntu 20.04"
+fi
 # ---
 
 # --- move necessary config files into the build folder
