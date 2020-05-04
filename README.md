@@ -7,13 +7,23 @@ Currently tested on Ubuntu, but should work across *all* distributions given the
 [Join the official Faster Project Plus Discord Channel for support!](https://discord.gg/ZHYxnFp)
 
 ## Dependencies needed (install these first!)
+
+### Ubuntu 20.04
+If running Ubuntu 20.04 or other distros based on it you must install this dep as well.
+
+`sudo apt install libxxf86vm-dev`
+
+You must also tell the installer you are running it as well. 
+
+## Other Deps
+
 For most users (including Fedora 24+), see [this page](https://wiki.dolphin-emu.org/index.php?title=Building_Dolphin_on_Linux) for an easy to install list of dependencies; otherwise, see below.
 
-NixOS: 
+### NixOS: 
 
 See [attached README, written by fletchers#4892](../other_distros/NixOS/INSTALL.md)
 
-Solus (possible list, untested):
+### Solus (possible list, untested):
 
 `sudo eopkg it -c system.devel`
 
@@ -60,6 +70,7 @@ v1.0: Support for versions 2.1 and 2.0.
 v2.0: Downloads the sd card for you.
 v3.0: Renames the config paths for you.
 V3.1: Optional parallel downloads, increases the speed by magnitudes.
+v4.0: Added support for Ubuntu 20.04
 
 ### Thanks to:
 
