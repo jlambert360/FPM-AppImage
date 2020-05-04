@@ -66,11 +66,11 @@ If a different version is needed (e.g. not SL default), edit the script and repl
 Packed config structure: main folder named `Binaries/`, with  `User/`, `Sys/`, `portable.txt`, and `version-####.txt`(optional) packed inside.
 
 ## Changelog
-v1.0: Support for versions 2.1 and 2.0.
-v2.0: Downloads the sd card for you.
-v3.0: Renames the config paths for you.
-V3.1: Optional parallel downloads, increases the speed by magnitudes.
-v4.0: Added support for Ubuntu 20.04
+    v1.0: Support for versions 2.1 and 2.0.
+    v2.0: Downloads the sd card for you.
+    v3.0: Renames the config paths for you.
+    V3.1: Optional parallel downloads, increases the speed by magnitudes.
+    v4.0: Added support for Ubuntu 20.04
 
 ### Thanks to:
 
