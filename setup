@@ -62,9 +62,9 @@ else
 fi
 # ---
 
-# --- ask if the user is on Ubuntu 20.04
+# --- ask if the user is on Ubuntu 20.04 or a derivative
 echo ""
-echo "Are you running Ubuntu 20.04 or a derivative? (y/N)"
+echo "Are you running Ubuntu 20.04 or downstream distribution? (y/N)"
 read -r RESP
 if [ "$RESP" = "y" ] || [ "$RESP" = "Y" ]; then
 	echo "Applying patch!"
@@ -198,6 +198,11 @@ echo "Patching tarball..."
 sed -i "s|\${GIT_EXECUTABLE} rev-parse HEAD|echo ${COMMITHASH}|g" CMakeLists.txt  # --set scm_rev_str everywhere to actual commit hash when downloaded
 sed -i "s|\${GIT_EXECUTABLE} describe --always --long --dirty|echo FM v$FPPVERSION|g" CMakeLists.txt # ensures compatibility w/ netplay
 sed -i "s|\${GIT_EXECUTABLE} rev-parse --abbrev-ref HEAD|echo HEAD|g" CMakeLists.txt
+# ---
+
+# --- Patch DiscExtractor.h
+echo "Patching DiscExtractor.h for Ubuntu 20.04"
+sed -i "s|#include <optional>|#include <optional> \n #include <string>|g" Source/Core/DiscIO/DiscExtractor.h
 # ---
 
 # --- Patch wxWidgets3 for Ubuntu 20.04
