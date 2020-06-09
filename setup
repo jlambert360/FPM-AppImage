@@ -64,7 +64,7 @@ fi
 
 # --- ask if the user is on Ubuntu 20.04 or a derivative
 echo ""
-echo "Are you running Ubuntu 20.04 or downstream distribution? (y/N)"
+echo "Are you running Ubuntu 20.04 or downstream distribution? This applies a patch allowing the installer to work. (y/N)"
 read -r RESP
 if [ "$RESP" = "y" ] || [ "$RESP" = "Y" ]; then
 	echo "Applying patch!"
@@ -74,6 +74,7 @@ else
 	UBPATCH=0
 fi
 # ---
+
 
 # --- if custom links aren't defined, prompt to choose a version
 if [ -z "$FPPVERSION" ] || [ -z "$COMMITHASH" ] || [ -z "$GITCLONELINK" ] || [ -z "$CONFIGLINK" ]; then #ORs used to ensure everything filled out
