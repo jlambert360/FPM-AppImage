@@ -201,8 +201,8 @@ sed -i "s|\${GIT_EXECUTABLE} rev-parse --abbrev-ref HEAD|echo HEAD|g" CMakeLists
 # ---
 
 # --- Patch DiscExtractor.h
-echo "Patching DiscExtractor.h for Ubuntu 20.04"
-sed -i "s|#include <optional>|#include <optional> \n #include <string>|g" Source/Core/DiscIO/DiscExtractor.h
+echo "Patching DiscExtractor.h"
+sed -i "s|#include <optional>|#include <optional>\n#include <string>|g" Source/Core/DiscIO/DiscExtractor.h
 # ---
 
 # --- Patch wxWidgets3 for Ubuntu 20.04
