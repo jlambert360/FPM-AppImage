@@ -80,21 +80,27 @@ fi
 if [ -z "$FPPVERSION" ] || [ -z "$COMMITHASH" ] || [ -z "$GITCLONELINK" ] || [ -z "$CONFIGLINK" ]; then #ORs used to ensure everything filled out
 	echo ""
 	echo "Which version of Faster Project Plus would you like to install? (default: 1)"
-	echo "1.) 2.1.1 (Latest version)"
-	echo "2.) 2.0"
+	echo "1.) 2.15 (Latest version)"
+	echo "2.) 2.1.1"
 	read -r RESP
 	if [ "$RESP" -eq 2 ] 2> /dev/null; then
-	 	FPPVERSION="2.0"
-		CONFIGNAME="fppconfig"
-		COMMITHASH="a667c245df18678b5060b3807e1c3238536c0ef1"
-		CONFIGLINK="https://github.com/Birdthulu/FPM-Installer/raw/master/config/legacy/$FPPVERSION-$CONFIGNAME.tar.gz"
-		GITCLONELINK="https://github.com/Birdthulu/Ishiiruka"
-	else
-		FPPVERSION="2.1.1"
+	 	FPPVERSION="2.1.1"
 		CONFIGNAME="fppconfig"
 		COMMITHASH="9054c90d9170f47a707933eac8cf0d67d553e951"
 		CONFIGLINK="https://github.com/Birdthulu/FPM-Installer/raw/master/config/$FPPVERSION-$CONFIGNAME.tar.gz"
 		GITCLONELINK="https://github.com/Birdthulu/Ishiiruka"
+		SdCardFileName="ProjectPlusSdCard.tar.gz"
+		SdCardDlHash="7f7q8a6m8plyq16"
+		SdCardLink="http://www.mediafire.com/file/$SdCardDlHash/$SdCardFileName/file"
+	else
+		FPPVERSION="2.15"
+		CONFIGNAME="fppconfig"
+		COMMITHASH="9054c90d9170f47a707933eac8cf0d67d553e951"
+		CONFIGLINK="https://github.com/Birdthulu/FPM-Installer/raw/master/config/$FPPVERSION-$CONFIGNAME.tar.gz"
+		GITCLONELINK="https://github.com/Birdthulu/Ishiiruka"
+		SdCardFileName="ProjectPlusSdCard.tar.gz"
+		SdCardDlHash="7f7q8a6m8plyq16"
+		SdCardLink="http://www.mediafire.com/file/$SdCardDlHash/$SdCardFileName/file"
 	fi
 	echo "Installing version $FPPVERSION!"
 else
@@ -238,9 +244,6 @@ make -j $CPUS -s
 # --- Download the sd card tarball, extract it, move it to proper folder, and delete tarball
 # credit to https://superuser.com/a/1517096 superuser.com user Zibri
 echo "Downloading sd card"
-SdCardFileName="ProjectPlusSdCard.tar.gz"
-SdCardDlHash="7f7q8a6m8plyq16"
-SdCardLink="http://www.mediafire.com/file/$SdCardDlHash/$SdCardFileName/file"
 url=$(curl -Lqs0 "$SdCardLink" | grep "href.*download.*media.*"| grep "$SdCardFileName" | cut -d '"' -f 2)
 
 echo "Attempting with Axel";

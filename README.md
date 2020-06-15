@@ -1,6 +1,6 @@
 # Faster Project Plus Installer for Linux
 
-A script for compiling Faster Project Plus on Linux. Current Version: **2.1**
+A script for compiling Faster Project Plus on Linux. Current Version: **2.15**
 
 Currently tested on Ubuntu, but should work across *all* distributions given the right dependencies. Older versions can be found under `config/legacy/`.
 
@@ -71,6 +71,7 @@ Packed config structure: main folder named `Binaries/`, with  `User/`, `Sys/`, `
     v3.0: Renames the config paths for you.
     V3.1: Optional parallel downloads, increases the speed by magnitudes.
     v4.0: Added support for Ubuntu 20.04
+    v5.0: Support for version 2.15.
 
 ### Thanks to:
 
