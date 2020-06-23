@@ -62,9 +62,9 @@ else
 fi
 # ---
 
-# --- ask if the user is on Ubuntu 20.04
+# --- ask if the user is on Ubuntu 20.04 or a derivative
 echo ""
-echo "Are you running Ubuntu 20.04 or a derivative? (y/N)"
+echo "Are you running Ubuntu 20.04 or downstream distribution? This applies a patch allowing the installer to work. (y/N)"
 read -r RESP
 if [ "$RESP" = "y" ] || [ "$RESP" = "Y" ]; then
 	echo "Applying patch!"
@@ -75,25 +75,47 @@ else
 fi
 # ---
 
+if ["$UBPATCH" != 1]; then
+	# --- ask if the user is on Arch or a derivative
+	echo ""
+	echo "Are you running Arch or downstream distribution? This applies a patch allowing the installer to work. (y/N)"
+	read -r RESP
+	if [ "$RESP" = "y" ] || [ "$RESP" = "Y" ]; then
+		echo "Applying patch!"
+		ARPATCH=1
+	else
+		echo "Will not apply patch."
+		ARPATCH=0
+	fi
+fi
+# ---
+
+
 # --- if custom links aren't defined, prompt to choose a version
 if [ -z "$FPPVERSION" ] || [ -z "$COMMITHASH" ] || [ -z "$GITCLONELINK" ] || [ -z "$CONFIGLINK" ]; then #ORs used to ensure everything filled out
 	echo ""
 	echo "Which version of Faster Project Plus would you like to install? (default: 1)"
-	echo "1.) 2.1.1 (Latest version)"
-	echo "2.) 2.0"
+	echo "1.) 2.15 (Latest version)"
+	echo "2.) 2.1.1"
 	read -r RESP
 	if [ "$RESP" -eq 2 ] 2> /dev/null; then
-	 	FPPVERSION="2.0"
-		CONFIGNAME="fppconfig"
-		COMMITHASH="a667c245df18678b5060b3807e1c3238536c0ef1"
-		CONFIGLINK="https://github.com/Birdthulu/FPM-Installer/raw/master/config/legacy/$FPPVERSION-$CONFIGNAME.tar.gz"
-		GITCLONELINK="https://github.com/Birdthulu/Ishiiruka"
-	else
-		FPPVERSION="2.1.1"
+	 	FPPVERSION="2.1.1"
 		CONFIGNAME="fppconfig"
 		COMMITHASH="9054c90d9170f47a707933eac8cf0d67d553e951"
+		CONFIGLINK="https://github.com/Birdthulu/FPM-Installer/raw/master/config/legacy/$FPPVERSION-$CONFIGNAME.tar.gz"
+		GITCLONELINK="https://github.com/Birdthulu/Ishiiruka"
+		SdCardFileName="ProjectPlusSdCard211.tar.gz"
+		SdCardDlHash="7f7q8a6m8plyq16"
+		SdCardLink="http://www.mediafire.com/file/$SdCardDlHash/$SdCardFileName/file"
+	else
+		FPPVERSION="2.15"
+		CONFIGNAME="fppconfig"
+		COMMITHASH="d6800a124dbba118e297188900d07adfea661b87"
 		CONFIGLINK="https://github.com/Birdthulu/FPM-Installer/raw/master/config/$FPPVERSION-$CONFIGNAME.tar.gz"
 		GITCLONELINK="https://github.com/Birdthulu/Ishiiruka"
+		SdCardFileName="ProjectPlusSdCard215.tar.gz"
+		SdCardDlHash="0anckw4hrxlqn5i"
+		SdCardLink="http://www.mediafire.com/file/$SdCardDlHash/$SdCardFileName/file"
 	fi
 	echo "Installing version $FPPVERSION!"
 else
@@ -200,15 +222,37 @@ sed -i "s|\${GIT_EXECUTABLE} describe --always --long --dirty|echo FM v$FPPVERSI
 sed -i "s|\${GIT_EXECUTABLE} rev-parse --abbrev-ref HEAD|echo HEAD|g" CMakeLists.txt
 # ---
 
+# --- Patch DiscExtractor.h
+echo "Patching DiscExtractor.h"
+sed -i "s|#include <optional>|#include <optional>\n#include <string>|g" Source/Core/DiscIO/DiscExtractor.h
+# ---
+
+# --- Set compiler to ggc-8 for Arch
+if [ "$ARPATCH" -eq 1 ]; then
+	echo "Setting compiler to gcc-8 for Arch based distros"
+	# Set C compiler and C++ compiler to GCC8
+	export CC="gcc-8"
+	export CXX="g++-8"
+else
+	echo "Skipping patch for Arch based distros"
+fi
+# ---
+
 # --- Patch wxWidgets3 for Ubuntu 20.04
 if [ "$UBPATCH" -eq 1 ]; then
-	echo "Patching wxWidgets3 for Ubuntu 20.04"
+	echo "Patching wxWidgets3 for Ubuntu 20.04 based distros"
 	sed -i "s| OR NOT X11_Xinerama_FOUND||g" Externals/wxWidgets3/CMakeLists.txt
 	sed -i "s|needs Xinerama and|needs|g" Externals/wxWidgets3/CMakeLists.txt
 	sed -i "s|\t\t\${X11_Xinerama_LIB}||g" Externals/wxWidgets3/CMakeLists.txt
 else
-	echo "Skipping patch for Ubuntu 20.04"
+	echo "Skipping patch for Ubuntu 20.04 based distros"
 fi
+# ---
+
+
+# --- move wx files into source
+cp Externals/wxWidgets3/include/wx Source/Core/ -r
+cp Externals/wxWidgets3/wx/* Source/Core/wx/ 
 # ---
 
 # --- move necessary config files into the build folder
@@ -232,26 +276,23 @@ make -j $CPUS -s
 # --- Download the sd card tarball, extract it, move it to proper folder, and delete tarball
 # credit to https://superuser.com/a/1517096 superuser.com user Zibri
 echo "Downloading sd card"
-SdCardFileName="ProjectPlusSdCard.tar.gz"
-SdCardDlHash="7f7q8a6m8plyq16"
-SdCardLink="http://www.mediafire.com/file/$SdCardDlHash/$SdCardFileName/file"
 url=$(curl -Lqs0 "$SdCardLink" | grep "href.*download.*media.*"| grep "$SdCardFileName" | cut -d '"' -f 2)
 
 echo "Attempting with Axel";
 if [ -x "$(command -v axel)" ]; then
 	axel "$url" -a -n $CPUS; 
 elif [ -x "$(command -v aria2c)" ]; then
-	echo "Axel command failed, dependency may be missing, attempting with aria2";
+	echo "Axel command failed, dependency may be missing, attempting with aria2c";
 	aria2c -x$CPUS "$url"
 else
- echo "Axel and Aria2 command failed, dependency may be missing, reverting to slowest way possible";
+ echo "Axel and Aria2c command failed, dependency may be missing, reverting to slowest way possible";
  wget "$url"
 fi
 
 echo "Extracting sd card"
-tar -xzf "ProjectPlusSdCard.tar.gz" --checkpoint-action='exec=printf "%d/12130 records extracted.\r" $TAR_CHECKPOINT' --totals
+tar -xzf "$SdCardFileName" --checkpoint-action='exec=printf "%d/12130 records extracted.\r" $TAR_CHECKPOINT' --totals
 mv "sd.raw" "Binaries/User/Wii/sd.raw"
-rm "ProjectPlusSdCard.tar.gz"
+rm "$SdCardFileName"
 # ---
 
 # --- Delete created files and old symlinks, isolate Binaries to their own folder
