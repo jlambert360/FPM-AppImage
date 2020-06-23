@@ -74,6 +74,12 @@ If a different version is needed (e.g. not SL default), edit the script and repl
 
 Packed config structure: main folder named `Binaries/`, with  `User/`, `Sys/`, `portable.txt`, and `version-####.txt`(optional) packed inside.
 
+## HD Textures
+You can download HD Textures [here](https://mega.nz/file/TR1nRCiL#J_410t7RjY3Q9EH2LrSu9OrK0VKEOYDsDzpp2gTI2c4)
+
+From the Full Quality texture folder, take all folders and place them into
+User/Load/textures/RSBE01/ after installation.
+
 ## Installer Changelog
     v1.0: Support for versions 2.1 and 2.0.
     v2.0: Downloads the sd card for you.
