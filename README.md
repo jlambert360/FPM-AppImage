@@ -6,12 +6,21 @@ Currently tested on Ubuntu, but should work across *all* distributions given the
 
 [Join the official Faster Project Plus Discord Channel for support!](https://discord.gg/ZHYxnFp)
 
-## Dependencies needed (install these first!)
 
-### Ubuntu 20.04
+### Support the Faster Project Plus team on Patreon!
+[Support us here!](https://www.patreon.com/FasterPM)
+
+
+# Dependencies needed (install these first!)
+
+## Arch based distros
+
+`sudo pacman -Sy gcc8 gcc8-libs`
+
+## Ubuntu 20.04 based distros
 If running Ubuntu 20.04 or other distros based on it you must install this dep as well.
 
-`sudo apt install libxxf86vm-dev`
+`sudo apt install libxxf86vm-dev libxmu-dev`
 
 You must also tell the installer you are running it as well. 
 
@@ -19,17 +28,17 @@ You must also tell the installer you are running it as well.
 
 For most users (including Fedora 24+), see [this page](https://wiki.dolphin-emu.org/index.php?title=Building_Dolphin_on_Linux) for an easy to install list of dependencies; otherwise, see below.
 
-### NixOS: 
+## NixOS: 
 
 See [attached README, written by fletchers#4892](../other_distros/NixOS/INSTALL.md)
 
-### Solus (possible list, untested):
+## Solus (possible list, untested):
 
 `sudo eopkg it -c system.devel`
 
 `sudo eopkg it libgtk-2-devel libgtk-3-devel wxwidgets-devel libsm-devel gtest-devel llvm-devel lzo-devel mbedtls-devel miniupnpc-devel libxrandr-devel libxi-devel alsa-lib-devel bluez-devel mesalib-devel curl-devel enet-devel libevdev-devel pulseaudio-devel libusb-devel openal-soft-devel portaudio-devel sdl2-devel SFML-devel soundtouch-devel git cmake pkg-config gcc readline-devel libxext-devel libao-devel`
 
-## Dependencies Optional
+## Optional Dependencies
 
 `axel` or `aria2c`
 
@@ -48,7 +57,7 @@ SD card file size 2Gb zipped to 1.6Gb
 | aria2c        | 3-4 mins      |   |
 | wget          | 15-20 mins    |   |
 
-## Instructions: (READ FULLY BEFORE FOLLOWING)
+# Instructions: (READ FULLY BEFORE FOLLOWING)
 
 1. Install necessary dependcies listed using guide above. Don't forget that optional deps will bring fast downloads.
 2. Use install script to obtain FPP
@@ -65,7 +74,7 @@ If a different version is needed (e.g. not SL default), edit the script and repl
 
 Packed config structure: main folder named `Binaries/`, with  `User/`, `Sys/`, `portable.txt`, and `version-####.txt`(optional) packed inside.
 
-## Changelog
+## Installer Changelog
     v1.0: Support for versions 2.1 and 2.0.
     v2.0: Downloads the sd card for you.
     v3.0: Renames the config paths for you.
@@ -73,7 +82,7 @@ Packed config structure: main folder named `Binaries/`, with  `User/`, `Sys/`, `
     v4.0: Added support for Ubuntu 20.04
     v5.0: Support for version 2.15.
 
-### Thanks to:
+## Thanks in part by:
 
 The entire FasterMelee team, without their installer as a base, this would probably not have been written.
 
