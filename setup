@@ -75,7 +75,7 @@ else
 fi
 # ---
 
-if ["$UBPATCH" != 1]; then
+if [ "$UBPATCH" != 1 ]; then
 	# --- ask if the user is on Arch or a derivative
 	echo ""
 	echo "Are you running Arch or downstream distribution? This applies a patch allowing the installer to work. (y/N)"
