@@ -5,3 +5,4 @@ other_distros/*
 Tools/linuxdeploy-update-plugin
 Tools/linuxdeploy
 Tools/appimageupdatetool
+AppDir/*
