@@ -1,0 +1,10 @@
+[Desktop Entry]
+Type=Application
+GenericName=Wii/GameCube Emulator
+Comment=Ishiiruka fork for SSBPM
+Categories=Emulator;Game;
+Icon=/home/kaloshade/Code/FPM-AppImage/bin/ishiiruka.png
+Keywords=ProjectM;Project M;ProjectPlus;Project Plus;Project+
+Version=2.15
+Name=Faster Project Plus
+Exec=/home/kaloshade/Code/FPM-AppImage/bin/ishiiruka
