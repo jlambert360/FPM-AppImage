@@ -1,0 +1,238 @@
+#!/bin/sh
+
+# --- Stops the script if errors are encountered. ---
+set -e
+
+CPUS=8
+
+# --- define custom config links here!
+FPPVERSION="" # name of FPP version, used in folder name
+COMMITHASH="" # full commit hash 
+GITCLONELINK="" # Version of Ishiiruka
+CONFIGLINK="" # Packed configs, can be found under config/ or config/legacy/
+# ---
+
+# --- delete all "FasterProjectPlus" folders filled with incomplete installations
+echo ""
+echo "Attempting to delete incomplete installations of FPP..."
+for f in FasterProjectPlus*; do
+	if [ -d "${f}" ] && [ ! -d "$f/bin" ]; then
+		echo "Found incomplete installation at $f/, deleting."
+		rm -rf "$f" # is incomplete if bin/ doesn't exist
+	fi
+done
+# ---
+
+rm -rf FasterProjectPlus*/
+echo "Deleted all FPP folders!"
+# ---
+
+UBPATCH=1
+ARPATCH=1
+# ---
+
+
+FPPVERSION="2.15"
+CONFIGNAME="fppconfig"
+COMMITHASH="d6800a124dbba118e297188900d07adfea661b87"
+CONFIGLINK="https://github.com/Birdthulu/FPM-Installer/raw/master/config/$FPPVERSION-$CONFIGNAME.tar.gz"
+GITCLONELINK="https://github.com/Birdthulu/Ishiiruka"
+SdCardFileName="ProjectPlusSdCard215.tar.gz"
+SdCardDlHash="0anckw4hrxlqn5i"
+SdCardLink="http://www.mediafire.com/file/$SdCardDlHash/$SdCardFileName/file"
+echo "Installing version $FPPVERSION!"
+
+# Set FOLDERNAME based on FPP version
+FOLDERNAME="FasterProjectPlus-${FPPVERSION}"
+
+# --- check for previously installed version, ask if overwrite is wanted
+if [ -d "$FOLDERNAME" ]; then
+	echo "
+	FPP Folder with same version found! Would you like to overwrite? (y/N)"
+	read -r RESP
+	if [ "$RESP" = "y" ] || [ "$RESP" = "Y" ]; then
+		echo "Are you sure? This action is not reversible! (y/N)"
+		read -r RESP
+		if [ "$RESP" = "y" ] || [ "$RESP" = "Y" ] ; then
+			rm -r "$FOLDERNAME"
+			echo "Deleted!"
+		else
+			echo "Quitting!"
+			exit
+		fi
+	else
+		echo "Quitting!"
+		exit
+	fi
+fi
+# ---
+
+
+# --- prompt to install adapter support
+sudo rm -f /etc/udev/rules.d/51-gcadapter.rules # remove even if doesn't exist
+echo 'SUBSYSTEM=="usb", ENV{DEVTYPE}=="usb_device", ATTRS{idVendor}=="057e", ATTRS{idProduct}=="0337", MODE="0666"' | sudo tee /etc/udev/rules.d/51-gcadapter.rules > /dev/null # pipe to write-protected file, remove STDOUT
+sudo udevadm control --reload-rules
+echo "Rules added!"
+SHORTCUTBOOL=1
+echo "Desktop shortcut queued!"
+
+echo "Using $CPUS thread(s)!"
+# ---
+
+# --- enter folder, download and extract needed files
+echo ""
+mkdir "$FOLDERNAME" && cd "$FOLDERNAME"
+echo "Downloading config files..."
+curl -LO# $CONFIGLINK
+echo "Extracting config files..."
+tar -xzf "$FPPVERSION-$CONFIGNAME.tar.gz" --checkpoint-action='exec=printf "%d/410 records extracted.\r" $TAR_CHECKPOINT' --totals
+rm "$FPPVERSION-$CONFIGNAME.tar.gz"
+echo ""
+echo "Downloading tarball..."
+curl -LO# "$GITCLONELINK/archive/$COMMITHASH.tar.gz"
+echo "Extracting tarball..."
+tar -xzf "$COMMITHASH.tar.gz" --checkpoint-action='exec=printf "%d/12130 records extracted.\r" $TAR_CHECKPOINT' --totals
+rm "$COMMITHASH.tar.gz"
+echo "" #spacing
+mv "Ishiiruka-$COMMITHASH" Ishiiruka
+cd Ishiiruka
+
+# --- Patch tarball to display correct hash to other netplay clients
+echo "Patching tarball..."
+sed -i "s|\${GIT_EXECUTABLE} rev-parse HEAD|echo ${COMMITHASH}|g" CMakeLists.txt  # --set scm_rev_str everywhere to actual commit hash when downloaded
+sed -i "s|\${GIT_EXECUTABLE} describe --always --long --dirty|echo FM v$FPPVERSION|g" CMakeLists.txt # ensures compatibility w/ netplay
+sed -i "s|\${GIT_EXECUTABLE} rev-parse --abbrev-ref HEAD|echo HEAD|g" CMakeLists.txt
+# ---
+
+# --- Patch DiscExtractor.h
+echo "Patching DiscExtractor.h"
+sed -i "s|#include <optional>|#include <optional>\n#include <string>|g" Source/Core/DiscIO/DiscExtractor.h
+# ---
+
+# --- Set compiler to ggc-8 for Arch
+if [ "$ARPATCH" -eq 1 ]; then
+	echo "Setting compiler to gcc-8 for Arch based distros"
+	# Set C compiler and C++ compiler to GCC8
+	export CC="gcc-8"
+	export CXX="g++-8"
+else
+	echo "Skipping patch for Arch based distros"
+fi
+# ---
+
+# --- Patch wxWidgets3 for Ubuntu 20.04
+if [ "$UBPATCH" -eq 1 ]; then
+	echo "Patching wxWidgets3 for Ubuntu 20.04 based distros"
+	sed -i "s| OR NOT X11_Xinerama_FOUND||g" Externals/wxWidgets3/CMakeLists.txt
+	sed -i "s|needs Xinerama and|needs|g" Externals/wxWidgets3/CMakeLists.txt
+	sed -i "s|\t\t\${X11_Xinerama_LIB}||g" Externals/wxWidgets3/CMakeLists.txt
+else
+	echo "Skipping patch for Ubuntu 20.04 based distros"
+fi
+# ---
+
+
+# --- move wx files into source
+cp Externals/wxWidgets3/include/wx Source/Core/ -r
+cp Externals/wxWidgets3/wx/* Source/Core/wx/ 
+# ---
+
+# --- move necessary config files into the build folder
+echo "Adding FPP config files..."
+mkdir build && cd build
+mv ../../Binaries .
+mv ../Data/ishiiruka.png Binaries/
+# ---
+
+# --- cmake and compile
+echo "cmaking..."
+if [ ! -z "${IN_NIX_SHELL++}" ]; then
+	cmake .. -DLINUX_LOCAL_DEV=true -DGTK2_GLIBCONFIG_INCLUDE_DIR=${glib}/lib/glib-2.0/include -DGTK2_GDKCONFIG_INCLUDE_DIR=${gtk2}/lib/gtk-2.0/include -DGTK2_INCLUDE_DIRS=${gtk2}/lib/gtk-2.0 -DENABLE_LTO=True -DCMAKE_INSTALL_PREFIX=/usr
+else
+	cmake .. -DLINUX_LOCAL_DEV=true -DCMAKE_INSTALL_PREFIX=/usr
+fi
+echo "Compiling..."
+make -j $CPUS -s
+touch ./Binaries/portable.txt
+# ---
+
+# --- Download the sd card tarball, extract it, move it to proper folder, and delete tarball
+# credit to https://superuser.com/a/1517096 superuser.com user Zibri
+echo "Downloading sd card"
+url=$(curl -Lqs0 "$SdCardLink" | grep "href.*download.*media.*"| grep "$SdCardFileName" | cut -d '"' -f 2)
+
+echo "Attempting with Axel";
+if [ -x "$(command -v axel)" ]; then
+	axel "$url" -a -n $CPUS; 
+elif [ -x "$(command -v aria2c)" ]; then
+	echo "Axel command failed, dependency may be missing, attempting with aria2c";
+	aria2c -x$CPUS "$url"
+else
+ echo "Axel and Aria2c command failed, dependency may be missing, reverting to slowest way possible";
+ wget "$url"
+fi
+
+echo "Extracting sd card"
+tar -xzf "$SdCardFileName" --checkpoint-action='exec=printf "%d/12130 records extracted.\r" $TAR_CHECKPOINT' --totals
+mv "sd.raw" "Binaries/User/Wii/sd.raw"
+rm "$SdCardFileName"
+# ---
+
+# --- Delete created files and old symlinks, isolate Binaries to their own folder
+echo "Cleaning up..."
+cd ../..
+mv Ishiiruka/build/Binaries/ bin/
+rm -rf Ishiiruka # -f required to remove git history
+rm -f ../launch-faster-project-plus # -f required if shortcuts do not exist
+rm -f ../launch-fpp
+# ---
+
+# --- Get Main path and Set Up path variables for config/Dolphin.ini 
+echo "Setting config paths"
+MainDir=$(pwd)"/bin"
+LauncherDir=$(MainDir)"/Launcher"
+GamesDir=$(MainDir)"/Games"
+SDPath=$(MainDir)"/User/Wii/sd.raw"
+IsoPath=$(GamesDir)"/RSBE01.iso"
+ConfigPath=$(MainDir)"/User/Config/Dolphin.ini"
+# ---
+
+# --- Set LauncherDir, GamesDir, SdCardPath, and Default ISO path in config/Dolphin.ini
+sed -i -e "s|LauncherDir|${LauncherDir}|" $(ConfigPath)
+sed -i -e "s|GamesPath|${GamesDir}|" $(ConfigPath)
+sed -i -e "s|SDPath|${SDPath}|" $(ConfigPath)
+sed -i -e "s|ISODirPath|${IsoPath}|" $(ConfigPath)
+# ---
+
+# --- create symlink to newly compiled dolphin-emu. if queued, create shortcut.
+echo "Creating shortcuts..."
+ln -s "$FOLDERNAME/bin/ishiiruka" ../launch-fpp
+if [ "$SHORTCUTBOOL" -eq 1 ] && [ -d ~/.local/share/applications ]; then
+	rm -f ~/.local/share/applications/faster-project-plus-$FPPVERSION.desktop # remove old shortcut
+	rm -f ~/Desktop/faster-project-plus-$FPPVERSION.desktop
+	touch ~/.local/share/applications/faster-project-plus-$FPPVERSION.desktop # fixes very rare tee bug?
+	EXEPATH="$(pwd)/bin"
+	FPPNAME="Faster Project Plus $FPPVERSION"
+	echo "[Desktop Entry]
+Type=Application
+GenericName=Wii/GameCube Emulator
+Comment=Ishiiruka fork for SSBPM
+Categories=Emulator;Game;
+Icon=$EXEPATH/ishiiruka.png
+Keywords=ProjectM;Project M;ProjectPlus;Project Plus;Project+
+Version=$FPPVERSION
+Name=$FPPNAME
+Exec=$EXEPATH/ishiiruka" | tee ~/.local/share/applications/faster-project-plus-$FPPVERSION.desktop > /dev/null
+	cp ~/.local/share/applications/faster-project-plus-$FPPVERSION.desktop ~/Desktop
+	chmod +x ~/Desktop/faster-project-plus-$FPPVERSION.desktop
+else
+	echo ".local folder not found, skipping desktop shortcut."
+fi
+# ---
+
+echo ""
+echo "***************************************************************************************************"
+echo "Done! Run ./launch-fpp to run the latest installed version!"
+echo "Alternatively, go to Application > Games or your desktop and select the desired version."
+echo "Make sure to unplug and replug your adapter before opening Dolphin if adapter rules were installed!"
+echo "***************************************************************************************************"
