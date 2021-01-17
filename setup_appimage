@@ -2,7 +2,17 @@
 # --- Stops the script if errors are encountered. ---
 set -e
 
-CPUS=8
+# --- Attempts to determine the number of cores in the CPU. ---
+# Source: https://gist.github.com/jj1bdx/5746298
+# Linux and similar...
+CPUS=$(getconf _NPROCESSORS_ONLN 2>/dev/null)
+# FreeBSD and similar...
+[ -z "$CPUS" ] && CPUS=$(getconf NPROCESSORS_ONLN)
+# Solaris and similar...
+[ -z "$CPUS" ] && CPUS=$(ksh93 -c 'getconf NPROCESSORS_ONLN')
+# Give up...
+[ -z "$CPUS" ] && CPUS=1
+# ---
 
 # --- define custom config links here!
 FPPVERSION="" # name of FPP version, used in folder name
@@ -78,40 +88,37 @@ echo "Using $CPUS thread(s)!"
 # # ---
 
 # --- enter folder, download and extract needed files
-echo ""
-if [ -d "$FOLDERNAME" ] 
-then
-    cd "$FOLDERNAME" 
-else
-    mkdir "$FOLDERNAME" && cd "$FOLDERNAME"
-fi
+# echo ""
+# if [ -d "$FOLDERNAME" ] 
+# then
+#     cd "$FOLDERNAME" 
+# else
+#     mkdir "$FOLDERNAME" && cd "$FOLDERNAME"
+# fi
 
 if [ -d "./Binaries" ] 
 then
-    echo "Binaries already found" 
-else
-	echo "Downloading config files..."
-	curl -LO# $CONFIGLINK
-	echo "Extracting config files..."
-	tar -xzf "$FPPVERSION-$CONFIGNAME.tar.gz" --checkpoint-action='exec=printf "%d/72980480 records extracted.\r" $TAR_CHECKPOINT' --totals
-	rm "$FPPVERSION-$CONFIGNAME.tar.gz"
+    echo "Removing binaries already found" 
+	rm ./Binaries -r
 fi
+echo "Extracting config files..."
+tar -xzf "./config/$FPPVERSION-$CONFIGNAME.tar.gz" --checkpoint-action='exec=printf "%d/72980480 records extracted.\r" $TAR_CHECKPOINT' --totals
 
 if [ -d "./Ishiiruka" ] 
 then
     echo "Ishiiruka dir found source files already accquired"
-	cd Ishiiruka
-else
-	echo ""
-	echo "Downloading tarball..."
-	curl -LO# "$GITCLONELINK/archive/$COMMITHASH.tar.gz"
-	echo "Extracting tarball..."
-	tar -xzf "$COMMITHASH.tar.gz" --checkpoint-action='exec=printf "%d/12130 records extracted.\r" $TAR_CHECKPOINT' --totals
-	rm "$COMMITHASH.tar.gz"
-	echo "" #spacing
-	mv "Ishiiruka-$COMMITHASH" Ishiiruka
-cd Ishiiruka
+	rm ./Ishiiruka -r
 fi
+echo ""
+echo "Downloading source tarball..."
+curl -LO# "$GITCLONELINK/archive/$COMMITHASH.tar.gz"
+echo "Extracting source..."
+tar -xzf "$COMMITHASH.tar.gz" --checkpoint-action='exec=printf "%d/12130 records extracted.\r" $TAR_CHECKPOINT' --totals
+rm "$COMMITHASH.tar.gz"
+echo "" #spacing
+mv "Ishiiruka-$COMMITHASH" Ishiiruka
+cd Ishiiruka
+
 
 
 # --- Patch tarball to display correct hash to other netplay clients
@@ -167,11 +174,24 @@ echo "cmaking..."
 if [ ! -z "${IN_NIX_SHELL++}" ]; then
 	cmake .. -DLINUX_LOCAL_DEV=true -DGTK2_GLIBCONFIG_INCLUDE_DIR=${glib}/lib/glib-2.0/include -DGTK2_GDKCONFIG_INCLUDE_DIR=${gtk2}/lib/gtk-2.0/include -DGTK2_INCLUDE_DIRS=${gtk2}/lib/gtk-2.0 -DENABLE_LTO=True -DCMAKE_INSTALL_PREFIX=/usr
 else
-	cmake .. -DLINUX_LOCAL_DEV=true -DCMAKE_INSTALL_PREFIX=/usr
+	cmake .. -DLINUX_LOCAL_DEV=true -DCMAKE_INSTALL_PREFIX=/usr -DVERSION_TAG="2.2.0"
 fi
 echo "Compiling..."
-make -j $CPUS -s
+make -j $CPUS -s BUILD_TAG=2.2.0
 touch ./Binaries/portable.txt
+
+cp ../../faster-project-plus.desktop ../Data/ishiiruka.desktop;
+cp ../../faster-project-plus.desktop .;
+
+if [ -d "./AppDir/" ] 
+then
+# Delete the AppDir folder to prevent build issues
+rm -rf ./AppDir/
+fi
+# Build the AppDir directory for this image
+mkdir -p AppDir
+
+make install DESTDIR=AppDir;
 # ---
 
 # # --- Download the sd card tarball, extract it, move it to proper folder, and delete tarball
