@@ -40,9 +40,9 @@ UBPATCH=1
 ARPATCH=0
 # ---
 
-FPPVERSION="2.2"
+FPPVERSION="2.25"
 CONFIGNAME="fppconfig"
-COMMITHASH="54e8f2407bccff421046872701fa6a8ef94e227a"
+COMMITHASH="0311660c433eb04755c93160bdfe1ea516364c68"
 CONFIGLINK="https://github.com/Birdthulu/FPM-Installer/raw/master/config/$FPPVERSION-$CONFIGNAME.tar.gz"
 GITCLONELINK="https://github.com/Birdthulu/Ishiiruka"
 SdCardFileName="2.2+Final+Fixed+SD.raw"
@@ -268,9 +268,9 @@ make install DESTDIR=AppDir;
 # fi
 # ---
 
-echo ""
-echo "***************************************************************************************************"
-echo "Done! Run ./launch-fpp to run the latest installed version!"
-echo "Alternatively, go to Application > Games or your desktop and select the desired version."
-echo "Make sure to unplug and replug your adapter before opening Dolphin if adapter rules were installed!"
-echo "***************************************************************************************************"
+#echo ""
+#echo "***************************************************************************************************"
+#echo "Done! Run ./launch-fpp to run the latest installed version!"
+#echo "Alternatively, go to Application > Games or your desktop and select the desired version."
+#echo "Make sure to unplug and replug your adapter before opening Dolphin if adapter rules were installed!"
+#echo "***************************************************************************************************"

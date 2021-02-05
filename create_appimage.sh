@@ -21,27 +21,28 @@ UPDATETOOL_URL="${UPDATETOOL_PATH}/${UPDATETOOL_FILE}"
 APPDIR_BIN="./build/AppDir/usr/bin"
 
 # Grab various appimage binaries from GitHub if we don't have them
-if [ ! -e ./Tools/linuxdeploy ]; then
-	wget ${LINUXDEPLOY_URL} -O ./Tools/linuxdeploy
-	chmod +x ./Tools/linuxdeploy
+if [ ! -e ./Tools/${LINUXDEPLOY_FILE} ]; then
+	wget ${LINUXDEPLOY_URL} -O ./Tools/${LINUXDEPLOY_FILE}
+	chmod +x ./Tools/${LINUXDEPLOY_FILE}
 fi
-if [ ! -e ./Tools/linuxdeploy-update-plugin ]; then
-	wget ${UPDATEPLUG_URL} -O ./Tools/linuxdeploy-update-plugin
-	chmod +x ./Tools/linuxdeploy-update-plugin
+if [ ! -e ./Tools/${UPDATEPLUG_FILE} ]; then
+	wget ${UPDATEPLUG_URL} -O ./Tools/${UPDATEPLUG_FILE}
+	chmod +x ./Tools/${UPDATEPLUG_FILE}
 fi
-if [ ! -e ./Tools/appimageupdatetool ]; then
-	wget ${UPDATETOOL_URL} -O ./Tools/appimageupdatetool
-	chmod +x ./Tools/appimageupdatetool
+if [ ! -e ./Tools/${UPDATETOOL_FILE} ]; then
+	wget ${UPDATETOOL_URL} -O ./Tools/${UPDATETOOL_FILE}
+	chmod +x ./Tools/${UPDATETOOL_FILE}
 fi
 
-./Tools/linuxdeploy --appdir=./build/AppDir --executable ./build/Binaries/ishiiruka -d ./Data/ishiiruka.desktop -i ./Data/ishiiruka.png
+pwd;
+./Tools/${LINUXDEPLOY_FILE} --appdir=./build/AppDir --executable ./build/Binaries/ishiiruka -d ./build/faster-project-plus.desktop -i ./build/Binaries/ishiiruka.png
 
 # Add the Sys dir to the AppDir for packaging
-cp -r Data/Sys ${APPDIR_BIN}
+cp -r ./Data/Sys/ ${APPDIR_BIN}
 
 # Package up the update tool within the AppImage
-cp ./Tools/appimageupdatetool ${APPDIR_BIN}
+cp ./Tools/${UPDATETOOL_FILE} ${APPDIR_BIN}
 
 # Bake an AppImage with the update metadata
-export UPDATE_INFORMATION="${ZSYNC_STRING}"; 
-./Tools/linuxdeploy-update-plugin --appdir=./build/AppDir/;
+# export UPDATE_INFORMATION="${ZSYNC_STRING}"; 
+./Tools/${UPDATEPLUG_FILE} --appdir=./build/AppDir/;

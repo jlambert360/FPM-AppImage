@@ -6,3 +6,6 @@ Tools/linuxdeploy-update-plugin
 Tools/linuxdeploy
 Tools/appimageupdatetool
 AppDir/*
+Launcher/*
+Launcher.tar.gz
+sd.raw
