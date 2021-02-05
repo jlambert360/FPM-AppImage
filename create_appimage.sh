@@ -35,7 +35,7 @@ if [ ! -e ./Tools/${UPDATETOOL_FILE} ]; then
 fi
 
 pwd;
-./Tools/${LINUXDEPLOY_FILE} --appdir=./build/AppDir --executable ./build/Binaries/ishiiruka -d ./build/faster-project-plus.desktop -i ./build/Binaries/ishiiruka.png
+./Tools/${LINUXDEPLOY_FILE} --appdir=./build/AppDir --executable ./build/Binaries/ishiiruka -d ./build/faster-project-plus.desktop -i ./Data/ishiiruka.svg
 
 # Add the Sys dir to the AppDir for packaging
 cp -r ./Data/Sys/ ${APPDIR_BIN}
@@ -49,5 +49,5 @@ export VERSION="2.25"
 ./Tools/${UPDATEPLUG_FILE} --appdir=./build/AppDir/;
 
 mv Faster_Project_Plus-$VERSION-x86_64.AppImage Faster_Project_Plus-x86-64.AppImage
-mv Faster_Project_plus-$VERSION-x86_64.AppImage.zsync Faster_Project_Plus-x86-64.AppImage.zsync
+mv Faster_Project_Plus-$VERSION-x86_64.AppImage.zsync Faster_Project_Plus-x86-64.AppImage.zsync
 
