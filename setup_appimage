@@ -40,14 +40,12 @@ UBPATCH=1
 ARPATCH=0
 # ---
 
-FPPVERSION="2.25"
+FPPVERSION="2.28"
 CONFIGNAME="fppconfig"
-COMMITHASH="0311660c433eb04755c93160bdfe1ea516364c68"
-CONFIGLINK="https://github.com/Birdthulu/FPM-Installer/raw/master/config/$FPPVERSION-$CONFIGNAME.tar.gz"
-GITCLONELINK="https://github.com/Birdthulu/Ishiiruka"
-SdCardFileName="2.2+Final+Fixed+SD.raw"
-SdCardDlHash="2wy1q6btypdjnor"
-SdCardLink="http://www.mediafire.com/file/$SdCardDlHash/$SdCardFileName/file"	
+COMMITHASH="75123e34eac5b0f3204f32a116c389f95da0766a"
+CONFIGLINK="https://github.com/jlambert360/FPM-Installer/raw/master/config/$CONFIGNAME.tar.gz"
+GITCLONELINK="https://github.com/jlambert360/Ishiiruka"
+SdCardLink="https://github.com/jlambert360/FPM-AppImage/releases/download/v$FPPVERSION/ProjectPlusSd$FPPVERSION.tar.gz"
 echo "Installing version $FPPVERSION!"
 
 # Set FOLDERNAME based on FPP version
@@ -174,10 +172,10 @@ echo "cmaking..."
 if [ ! -z "${IN_NIX_SHELL++}" ]; then
 	cmake .. -DLINUX_LOCAL_DEV=true -DGTK2_GLIBCONFIG_INCLUDE_DIR=${glib}/lib/glib-2.0/include -DGTK2_GDKCONFIG_INCLUDE_DIR=${gtk2}/lib/gtk-2.0/include -DGTK2_INCLUDE_DIRS=${gtk2}/lib/gtk-2.0 -DENABLE_LTO=True -DCMAKE_INSTALL_PREFIX=/usr
 else
-	cmake .. -DLINUX_LOCAL_DEV=true -DCMAKE_INSTALL_PREFIX=/usr -DVERSION_TAG="2.2.0"
+	cmake .. -DLINUX_LOCAL_DEV=true -DCMAKE_INSTALL_PREFIX=/usr -DVERSION_TAG="$FPPVERSION"
 fi
 echo "Compiling..."
-make -j $CPUS -s BUILD_TAG=2.2.0
+make -j $CPUS -s BUILD_TAG=$FPPVERSION
 touch ./Binaries/portable.txt
 
 cp ../../faster-project-plus.desktop ../Data/ishiiruka.desktop;

@@ -4,7 +4,7 @@ set -e
 
 cd Ishiiruka
 
-ZSYNC_STRING="gh-releases-zsync|Birdthulu|FPM-AppImage|latest|Faster_Project_Plus-x86_64.AppImage.zsync"
+ZSYNC_STRING="gh-releases-zsync|jlambert360|FPM-AppImage|latest|Faster_Project_Plus-x86-64.AppImage.zsync"
 
 LINUXDEPLOY_PATH="https://github.com/linuxdeploy/linuxdeploy/releases/download/continuous"
 LINUXDEPLOY_FILE="linuxdeploy-x86_64.AppImage"
@@ -45,7 +45,7 @@ cp ./Tools/${UPDATETOOL_FILE} ${APPDIR_BIN}
 
 # Bake an AppImage with the update metadata
 export UPDATE_INFORMATION="${ZSYNC_STRING}"; 
-export VERSION="2.25"
+export VERSION="2.28"
 ./Tools/${UPDATEPLUG_FILE} --appdir=./build/AppDir/;
 
 mv Faster_Project_Plus-$VERSION-x86_64.AppImage Faster_Project_Plus-x86-64.AppImage
