@@ -40,9 +40,9 @@ UBPATCH=1
 ARPATCH=0
 # ---
 
-FPPVERSION="2.28"
+FPPVERSION="2.29"
 CONFIGNAME="fppconfig"
-COMMITHASH="75123e34eac5b0f3204f32a116c389f95da0766a"
+COMMITHASH="81e0a8f8a53f429b341d440ddb2d2b7802b66d52"
 CONFIGLINK="https://github.com/jlambert360/FPM-Installer/raw/master/config/$CONFIGNAME.tar.gz"
 GITCLONELINK="https://github.com/jlambert360/Ishiiruka"
 SdCardLink="https://github.com/jlambert360/FPM-AppImage/releases/download/v$FPPVERSION/ProjectPlusSd$FPPVERSION.tar.gz"
@@ -100,7 +100,7 @@ then
 	rm ./Binaries -r
 fi
 echo "Extracting config files..."
-tar -xzf "./config/$FPPVERSION-$CONFIGNAME.tar.gz" --checkpoint-action='exec=printf "%d/72980480 records extracted.\r" $TAR_CHECKPOINT' --totals
+tar -xzf "./config/$CONFIGNAME.tar.gz" --checkpoint-action='exec=printf "%d/72980480 records extracted.\r" $TAR_CHECKPOINT' --totals
 
 if [ -d "./Ishiiruka" ] 
 then

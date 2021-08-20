@@ -45,7 +45,7 @@ cp ./Tools/${UPDATETOOL_FILE} ${APPDIR_BIN}
 
 # Bake an AppImage with the update metadata
 export UPDATE_INFORMATION="${ZSYNC_STRING}"; 
-export VERSION="2.28"
+export VERSION="2.29"
 ./Tools/${UPDATEPLUG_FILE} --appdir=./build/AppDir/;
 
 mv Faster_Project_Plus-$VERSION-x86_64.AppImage Faster_Project_Plus-x86-64.AppImage
